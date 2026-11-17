@@ -1,0 +1,16 @@
+apiVersion: piraeus.io/v1
+kind: LinstorSatelliteConfiguration
+metadata:
+  name: ryzen-9-config
+spec:
+  nodeSelector:
+    kubernetes.io/hostname: ryzen-9
+  storagePools:
+    - name: nvme-ssd-boot
+      fileThinPool:
+        directory: /var/mnt/piraeus
+    - name: nvme-ssd
+      lvmThinPool: {}
+      source:
+        hostDevices:
+          - /dev/disk/by-partlabel/r-nvme-ssd0

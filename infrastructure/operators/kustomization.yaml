@@ -4,3 +4,4 @@ resources:
   - 1password-connect.yaml
   - cert-manager.yaml
   - external-dns.yaml
+  - piraeus.yaml

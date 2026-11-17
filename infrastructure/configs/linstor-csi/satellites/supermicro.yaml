@@ -1,0 +1,27 @@
+apiVersion: piraeus.io/v1
+kind: LinstorSatelliteConfiguration
+metadata:
+  name: supermicro-config
+spec:
+  nodeSelector:
+    kubernetes.io/hostname: supermicro
+  properties:
+    - name: Cache/CachePool
+      value: sata-ssd
+    - name: Cache/MetaPool
+      value: sata-ssd
+  storagePools:
+    - name: nvme-ssd-boot
+      fileThinPool:
+        directory: /var/mnt/piraeus
+    - name: sata-ssd
+      lvmThinPool: {}
+      source:
+        hostDevices:
+          - /dev/disk/by-partlabel/r-sata-ssd0
+          - /dev/disk/by-partlabel/r-sata-ssd1
+    - name: raid-hdd
+      lvmThinPool: {}
+      source:
+        hostDevices:
+          - /dev/disk/by-partlabel/r-raid-arr0

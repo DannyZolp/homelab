@@ -4,6 +4,17 @@ kind: Namespace
 metadata:
   name: cert-manager
 ---
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+  name: cloudflare-api-secret
+  namespace: cert-manager
+  labels:
+    infrastructure-stage: secrets
+spec:
+  itemPath: "${ONEPASSWORD_CLOUDFLARE_ITEM_PATH}"
+
+---
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
@@ -16,7 +27,7 @@ spec:
     mediaType: "application/vnd.cncf.helm.chart.content.v1.tar+gzip"
     operation: copy
   ref:
-    semver: "*"
+    tag: "v1.21.3"
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -24,6 +35,9 @@ metadata:
   name: cert-manager
   namespace: cert-manager
 spec:
+  dependsOn:
+    - name: connect
+      namespace: 1password-connect
   interval: 12h
   chartRef:
     kind: OCIRepository

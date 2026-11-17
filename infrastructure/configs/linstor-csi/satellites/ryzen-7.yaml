@@ -1,0 +1,21 @@
+apiVersion: piraeus.io/v1
+kind: LinstorSatelliteConfiguration
+metadata:
+  name: ryzen-7-config
+spec:
+  nodeSelector:
+    kubernetes.io/hostname: ryzen-7
+  properties:
+    - name: Cache/CachePool
+      value: nvme-ssd-boot
+    - name: Cache/MetaPool
+      value: nvme-ssd-boot
+  storagePools:
+    - name: nvme-ssd-boot
+      fileThinPool:
+        directory: /var/mnt/piraeus
+    - name: sata-hdd
+      lvmThinPool: {}
+      source:
+        hostDevices:
+          - /dev/disk/by-partlabel/r-sata-hdd0

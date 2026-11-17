@@ -1,0 +1,15 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: capacity
+provisioner: linstor.csi.linbit.com
+allowVolumeExpansion: true
+volumeBindingMode: WaitForFirstConsumer
+reclaimPolicy: Retain
+parameters:
+  linstor.csi.linbit.com/placementCount: "2"
+  linstor.csi.linbit.com/storagePool: "sata-hdd raid-hdd"
+  linstor.csi.linbit.com/layerList: "drbd cache storage"
+  property.linstor.csi.linbit.com/Cache/Cachesize: "1%"
+  property.linstor.csi.linbit.com/Cache/OpMode: "writethrough"
+  property.linstor.csi.linbit.com/Cache/Policy: "smq"

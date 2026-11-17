@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: talos-lvm-config
+  namespace: piraeus-system
+data:
+  lvm.conf: |
+    backup {
+      backup = 1
+      archive = 1
+    }
+---
+apiVersion: piraeus.io/v1
+kind: LinstorSatelliteConfiguration
+metadata:
+  name: talos-loader-override
+spec:
+  podTemplate:
+    spec:
+      initContainers:
+        - name: drbd-shutdown-guard
+          $patch: delete
+        - name: drbd-module-loader
+          $patch: delete
+        - name: setup-lvm-configuration
+          volumeMounts:
+            - mountPath: /host/etc/lvm
+              name: talos-lvm-config
+              readOnly: true
+      volumes:
+        - name: run-systemd-system
+          $patch: delete
+        - name: run-drbd-shutdown-guard
+          $patch: delete
+        - name: systemd-bus-socket
+          $patch: delete
+        - name: lib-modules
+          $patch: delete
+        - name: usr-src
+          $patch: delete
+        # Use a distinct volume name because the API prunes hostPath: null.
+        - name: etc-lvm
+          $patch: delete
+        - name: talos-lvm-config
+          configMap:
+            name: talos-lvm-config
+        - name: etc-lvm-backup
+          hostPath:
+            path: /var/etc/lvm/backup
+            type: DirectoryOrCreate
+        - name: etc-lvm-archive
+          hostPath:
+            path: /var/etc/lvm/archive
+            type: DirectoryOrCreate

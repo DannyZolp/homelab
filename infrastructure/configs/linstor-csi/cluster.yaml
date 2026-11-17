@@ -1,0 +1,11 @@
+apiVersion: piraeus.io/v1
+kind: LinstorCluster
+metadata:
+  name: piraeus
+spec:
+  # Workloads and storage live on the workers, not the tainted control plane.
+  nodeAffinity:
+    nodeSelectorTerms:
+      - matchExpressions:
+          - key: node-role.kubernetes.io/control-plane
+            operator: DoesNotExist

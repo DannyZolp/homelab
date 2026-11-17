@@ -1,0 +1,26 @@
+apiVersion: piraeus.io/v1
+kind: LinstorSatelliteConfiguration
+metadata:
+  name: z640-config
+spec:
+  nodeSelector:
+    kubernetes.io/hostname: z640
+  properties:
+    - name: Cache/CachePool
+      value: sata-ssd
+    - name: Cache/MetaPool
+      value: sata-ssd
+  storagePools:
+    - name: nvme-ssd-boot
+      fileThinPool:
+        directory: /var/mnt/piraeus
+    - name: sata-ssd
+      lvmThinPool: {}
+      source:
+        hostDevices:
+          - /dev/disk/by-partlabel/r-sata-ssd0
+    - name: raid-hdd
+      lvmThinPool: {}
+      source:
+        hostDevices:
+          - /dev/disk/by-partlabel/r-raid-arr0
