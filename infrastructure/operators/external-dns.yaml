@@ -40,7 +40,7 @@ spec:
         valueFrom:
           secretKeyRef:
             name: cloudflare-api-secret
-            key: token
+            key: credential
     sources:
       - service
       - gateway-httproute
