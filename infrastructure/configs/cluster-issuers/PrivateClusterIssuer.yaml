@@ -1,0 +1,17 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: private-issuer
+spec:
+  acme:
+    server: "${INTERNAL_PKI_ACME_SERVER}"
+    email: "${ACME_EMAIL}"
+    caBundle: "${INTERNAL_PKI_CA}"
+    privateKeySecretRef:
+      name: "private-issuer-secret"
+    solvers:
+      - dns01:
+          cloudflare:
+            apiTokenSecretRef:
+              name: cloudflare-api-secret
+              key: token

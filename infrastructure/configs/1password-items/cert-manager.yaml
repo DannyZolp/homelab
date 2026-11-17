@@ -1,0 +1,7 @@
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+  name: cloudflare-api-secret
+  namespace: cert-manager
+spec:
+  itemPath: "${ONEPASSWORD_CLOUDFLARE_ITEM_PATH}"
