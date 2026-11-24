@@ -48,4 +48,5 @@ spec:
         - oci://quay.io/jetstack/charts
         - oci://registry.k8s.io
     audit:
+      ignoredNamespaces: [kube-system, kube-node-lease, kube-public, "*-system"]
       disabledChecks: [tlsCertificateExpiry]
