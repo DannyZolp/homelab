@@ -3,6 +3,15 @@ kind: Namespace
 metadata:
   name: forgejo
 ---
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+  name: forgejo-admin
+  namespace: forgejo
+type: kubernetes.io/basic-auth
+spec:
+  itemPath: "${ONEPASSWORD_FORGEJO_ADMIN_ITEM_PATH}"
+---
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
@@ -35,6 +44,9 @@ spec:
       enabled: true
       storageClass: performance
     gitea:
+      admin:
+        existingSecret: forgejo-admin
+        passwordMode: keepUpdated
       additionalConfigFromEnvs:
         - name: FORGEJO__DATABASE__USER
           valueFrom:
