@@ -1,0 +1,46 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: forgejo-postgres
+  namespace: forgejo
+spec:
+  instances: 1
+  storage:
+    storageClass: performance
+    size: 64Gi
+---
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+  name: forgejo-postgres-credentials
+  namespace: forgejo
+  labels:
+    cnpg.io/reload: "true"
+type: kubernetes.io/basic-auth
+spec:
+  itemPath: "${ONEPASSWORD_FORGEJO_POSTGRES_ITEM_PATH}"
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: forgejo
+  namespace: forgejo
+spec:
+  cluster:
+    name: forgejo-postgres
+  name: forgejo
+  login: true
+  passwordSecret:
+    name: forgejo-postgres-credentials
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: forgejo
+  namespace: forgejo
+spec:
+  cluster:
+    name: forgejo-postgres
+  name: forgejo
+  owner: forgejo
