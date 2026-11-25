@@ -12,6 +12,14 @@ type: kubernetes.io/basic-auth
 spec:
   itemPath: "${ONEPASSWORD_FORGEJO_ADMIN_ITEM_PATH}"
 ---
+apiVersion: onepassword.com/v1
+kind: OnePasswordItem
+metadata:
+  name: forgejo-smtp
+  namespace: forgejo
+spec:
+  itemPath: "${ONEPASSWORD_FORGEJO_SMTP_ITEM_PATH}"
+---
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
@@ -58,7 +66,18 @@ spec:
             secretKeyRef:
               name: forgejo-postgres-credentials
               key: password
+        - name: FORGEJO__MAILER__PASSWD
+          valueFrom:
+            secretKeyRef:
+              name: forgejo-smtp
+              key: password
       config:
+        mailer:
+          ENABLED: true
+          SMTP_ADDR: "${FORGEJO_SMTP_SERVER}"
+          SMTP_PORT: "${FORGEJO_SMTP_PORT}"
+          USER: "${FORGEJO_SMTP_USERNAME}"
+          FROM: "${FORGEJO_SMTP_FROM}"
         database:
           DB_TYPE: postgres
           HOST: forgejo-postgres-rw:5432
